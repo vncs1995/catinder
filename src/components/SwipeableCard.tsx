@@ -18,7 +18,7 @@ export default ({item}: {item: CatListResponse}) => {
             <Text style={styles.title}>{item?.name}</Text>
             <Text style={styles.subtitle}>{item?.origin}</Text>
           </View>
-          <Text style={styles.dogFriendlyRate}>{item?.dog_friendly}</Text>
+          <Text style={styles.dogFriendlyRate}>{item?.affection_level}</Text>
         </View>
       </View>
     </ImageBackground>

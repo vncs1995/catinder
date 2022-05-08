@@ -54,6 +54,7 @@ export type CatWeight = {
 };
 
 export const listCats = () =>
-  axios.get<CatListResponse>(
-    'https://docs.thecatapi.com/api-reference/breeds/breeds-list',
+  axios.get<CatListResponse[]>(
+    'https://api.thecatapi.com/v1/breeds',
+    // {headers: {'x-api-key': 'DEMO-API-KEY'}},
   );
