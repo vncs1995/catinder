@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import _Icon from 'react-native-vector-icons/FontAwesome';
 import {IconProps} from 'react-native-vector-icons/Icon';
 
-export const myIcon = (props: IconProps) => <Icon {...props} />;
+export const Icon = (props: IconProps) => <_Icon {...props} />;
