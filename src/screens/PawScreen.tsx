@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import colors from '../assets/colors';
 import {RoundedButton} from '../components/RoundedButton';
 import SwipeableCard from '../components/SwipeableCard';
@@ -22,6 +23,9 @@ import {Text} from '../components/Text';
 
 export const PawScreen = () => {
   const [listOfCats, setListCats] = useState<CatListResponse[]>([]);
+  const [currentCat, setCurrentCat] = useState<CatListResponse>();
+  const swipeRef = useRef(null);
+  const tabBarHeight = useBottomTabBarHeight();
   const fetchCats = useCallback(async () => {
     const response = await listCats();
     console.log('responde: ', response);
@@ -41,10 +45,9 @@ export const PawScreen = () => {
   }
 
   function handleYup(chosenCat: CatListResponse) {
-    console.log(`Yup for ${chosenCat.name}`);
     const payload = {image_id: chosenCat.image.id, value: 1};
     sendVotePost(payload);
-    return true; // return false if you wish to cancel the action
+    return true;
   }
   function handleNope(chosenCat: CatListResponse) {
     const payload = {image_id: chosenCat.image.id, value: 0};
@@ -59,10 +62,13 @@ export const PawScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.white} barStyle="dark-content" />
+      <View style={styles.additionalSpacing} />
       <ToggleBar />
       <SwipeCards
+        ref={swipeRef}
         cards={listOfCats}
         renderCard={(cat: CatListResponse) => {
+          setCurrentCat(cat);
           return <SwipeableCard item={cat} />;
         }}
         keyExtractor={(cat: CatListResponse) => cat.name}
@@ -75,16 +81,17 @@ export const PawScreen = () => {
       />
       <View style={styles.voteButtons}>
         <RoundedButton
-          onPress={() => console.log('tapped')}
+          onPress={() => swipeRef?.current?.swipeYup(handleYup(currentCat))}
           iconName="heart"
           color={colors.green}
         />
         <RoundedButton
-          onPress={() => console.log('tapped')}
+          onPress={() => swipeRef?.current?.swipeNope(handleNope(currentCat))}
           iconName="times"
           color={colors.red}
         />
       </View>
+      <View style={{marginBottom: tabBarHeight}} />
     </SafeAreaView>
   );
 };
@@ -95,6 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
+  additionalSpacing: {marginTop: 30},
   voteButtons: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
